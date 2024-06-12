@@ -43,36 +43,36 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 
 
-    public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException manve, HttpServletRequest request) {
-        ErrorDetail errorDetail = new ErrorDetail();
-        // Populate errorDetail instance
-        errorDetail.setTimeStamp(new Date().getTime());
-        errorDetail.setStatus(HttpStatus.BAD_REQUEST.value());
-        String requestPath = (String) request.getAttribute("javax.servlet.error.request_uri");
-        if(requestPath == null) {
-            requestPath = request.getRequestURI();
-        }errorDetail.setTitle("Validation Failed");
-        errorDetail.setDetail("Input validation failed");
-        errorDetail.setDeveloperMessage(manve.getClass().getName());
-
-        // Create ValidationError instances
-        List<FieldError> fieldErrors = manve.getBindingResult().getFieldErrors();
-        for(FieldError fe : fieldErrors) {
-            List<ValidationError> validationErrorList = errorDetail.getErrors().
-                    get(fe.getField());
-            if(validationErrorList == null) {
-                validationErrorList = new ArrayList<ValidationError>();
-                errorDetail.getErrors().put(fe.getField(),
-                        validationErrorList);
-            }
-            ValidationError validationError = new ValidationError();
-            validationError.setCode(fe.getCode());
-            validationError.setMessage(fe.getDefaultMessage());
-            validationErrorList.add(validationError);
-        }
-
-        return new ResponseEntity<>(errorDetail, null, HttpStatus. BAD_REQUEST);
-    }
+//    public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException manve, HttpServletRequest request) {
+//        ErrorDetail errorDetail = new ErrorDetail();
+//        // Populate errorDetail instance
+//        errorDetail.setTimeStamp(new Date().getTime());
+//        errorDetail.setStatus(HttpStatus.BAD_REQUEST.value());
+//        String requestPath = (String) request.getAttribute("javax.servlet.error.request_uri");
+//        if(requestPath == null) {
+//            requestPath = request.getRequestURI();
+//        }errorDetail.setTitle("Validation Failed");
+//        errorDetail.setDetail("Input validation failed");
+//        errorDetail.setDeveloperMessage(manve.getClass().getName());
+//
+//         Create ValidationError instances
+//        List<FieldError> fieldErrors = manve.getBindingResult().getFieldErrors();
+//        for(FieldError fe : fieldErrors) {
+//            List<ValidationError> validationErrorList = errorDetail.getErrors().
+//                    get(fe.getField());
+//            if(validationErrorList == null) {
+//                validationErrorList = new ArrayList<ValidationError>();
+//                errorDetail.getErrors().put(fe.getField(),
+//                        validationErrorList);
+//            }
+//            ValidationError validationError = new ValidationError();
+//            validationError.setCode(fe.getCode());
+//            validationError.setMessage(fe.getDefaultMessage());
+//            validationErrorList.add(validationError);
+//        }
+//
+//        return new ResponseEntity<>(errorDetail, null, HttpStatus. BAD_REQUEST);
+//    }
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         ErrorDetail errorDetail = new ErrorDetail();
@@ -92,6 +92,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         errorDetail.setTitle("Message Not Readable");
         errorDetail.setDetail(manve.getMessage());
         errorDetail.setDeveloperMessage(manve.getClass().getName());
+//        errorDetail.setMessage(messageSource.getMessage(manve, null));
+        List<FieldError> fieldErrors = manve.getBindingResult().getFieldErrors();
+        for(FieldError fe : fieldErrors) {
+            List<ValidationError> validationErrorList = errorDetail.getErrors().
+                    get(fe.getField());
+            if(validationErrorList == null) {
+                validationErrorList = new ArrayList<ValidationError>();
+                errorDetail.getErrors().put(fe.getField(),
+                        validationErrorList);
+            }
+            ValidationError validationError = new ValidationError();
+            validationError.setCode(fe.getCode());
+            validationError.setMessage(fe.getDefaultMessage());
+            validationErrorList.add(validationError);
+        }
         return handleExceptionInternal(manve, errorDetail, headers, status, request);
     }
 

@@ -10,6 +10,7 @@ public class ErrorDetail {
     private String detail;
     private long timeStamp;
     private String developerMessage;
+    private String message;
     private Map<String, List<ValidationError>> errors = new HashMap<String,
                 List<ValidationError>>();
 
@@ -59,5 +60,13 @@ public class ErrorDetail {
 
     public void setErrors(Map<String, List<ValidationError>> errors) {
         this.errors = errors;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

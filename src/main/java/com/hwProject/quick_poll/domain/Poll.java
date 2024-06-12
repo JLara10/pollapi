@@ -15,7 +15,7 @@ public class Poll {
     @NotEmpty
     private String question;
     @OneToMany(cascade= CascadeType.ALL)
-    @JoinColumn(name="POLL_ID",referencedColumnName = "POLL_ID")
+    @JoinColumn(name="POLL_ID")
     @OrderBy
     @Size(min=2, max = 6)
     private Set<PollOption> pollOptions;
